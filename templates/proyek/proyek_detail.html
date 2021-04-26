@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% block head %}<title>CV BKS | {{ proyek.nama_proyek }}</title>{% endblock %}
+
+{% block body %}
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>Detail Proyek</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="/">Home</a></li>
+              <li class="breadcrumb-item"><a href="/proyek">Proyek</a></li>
+              <li class="breadcrumb-item active">Detail Proyek</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+
+      <!-- Default box -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Detail Proyek</h3>
+
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+              <i class="fas fa-minus"></i>
+            </button>
+            <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-12 col-md-12 col-lg-8 order-2 order-md-1">
+              <div class="row">
+                <div class="col-12 col-sm">
+                  <div class="card card-outline card-warning bg-light">
+                    <div class="card-header">
+                      <span class="info-box-text text-center text-muted">Progres Pekerjaan</span>
+                      <br>
+                      <div class="progress progress-sm" style="margin-top: 10px;">
+                        <div class="progress-bar bg-green" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+                      </div>
+                      <small>
+                        100% Complete
+                      </small>
+                      <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                          <i class="fas fa-minus"></i>
+                        </button>
+                      </div>
+                      <!-- /.card-tools -->
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body" style="display: block;">
+                      <p class="text-sm">Tanggal Mulai
+                        <b class="d-block">{{ proyek.tgl_mulai }}</b>
+                      </p>
+                      <p class="text-sm">Perkiraan Tanggal Selesai
+                        <b class="d-block">{{ proyek.tgl_selesai }}</b>
+                      </p>
+                    </div>
+                  </div>
+                  <!-- /.card-body -->  
+                  <!-- /.card -->
+                </div>
+                <div class="col-12 col-sm">
+
+                <div class="card card-outline card-warning bg-light">
+                    <div class="card-header">
+                    <span class="info-box-text text-center text-muted">Progres Keuangan</span>
+                    <br>
+                    <div class="progress progress-sm" style="margin-top: 10px;">
+                        <div class="progress-bar bg-green" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                        </div>
+                    </div>
+                    <small>
+                        100% Complete
+                    </small>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                        </button>
+                    </div>
+                    <!-- /.card-tools -->
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body" style="display: block;">
+                        <p class="text-sm">Total Pengeluaran
+                            <b class="d-block">Rp. 34,000,000</b>
+                        </p>
+                        <p class="text-sm">Total Anggaran
+                            <b class="d-block">Rp. 34,000,000</b>
+                        </p>
+                      </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            
+                </div>
+              
+              
+            </div>
+            <div class="col-12 col-md-12 col-lg-4 order-1 order-md-2">
+              <h3 class="text-primary"><i class="fas fa-hammer"></i> {{ proyek.nama_proyek }}</h3>
+              <br>
+              <div class="text-muted">
+                <p class="text-sm">Lokasi Proyek
+                  <b class="d-block">{{ proyek.lokasi }}</b>
+                </p>
+                <p class="text-sm">Nama Klien
+                  <b class="d-block">{{ proyek.nama_klien }}</b>
+                </p>
+                <p class="text-sm">Kontak Klien
+                  <b class="d-block">{{ proyek.no_hp }}</b>
+                </p>
+              </div>
+              
+              <div class="text-center mt-5 mb-3">
+                <a href="/proyek/neraca/{{ proyek.id }}" class="btn btn-sm btn-primary"><i class="fas fa-balance-scale"></i> Lihat Neraca</a>
+                <a href="/proyek/rab/{{ proyek.id }}" class="btn btn-sm btn-primary"><i class="fas fa-chart-pie"></i> Lihat Rekap RAB</a>
+                <a href="/proyek" class="btn btn-sm btn-warning"><i class="fas fa-sign-out-alt"></i>Kembali</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /.card-body -->
+      </div>
+      <!-- /.card -->
+
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+{% endblock %}

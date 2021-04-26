@@ -1,0 +1,184 @@
+{% extends 'base.html' %}
+
+{% block head %} <title>CV BKS | Proyek</title> {% endblock %}
+{% block status_proyek %} active {% endblock %}
+{% block body %}
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>Proyek</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active">Proyek</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+
+      <!-- Default box -->
+      <div class="card">
+        <div class="card-header">
+          <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#modal-default">
+            <i class="fas fa-plus"></i>Tambah
+          </button>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+              <i class="fas fa-minus"></i>
+            </button>
+            <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+        <div class="card-body p-0">
+          <table class="table table-striped projects">
+              <thead>
+                  <tr>
+                      <th style="width: 2%">
+                          #
+                      </th>
+                      <th style="width: 30%">
+                          Nama Proyek
+                      </th>
+                      <th style="width: 12%">
+                          Tgl. Mulai
+                      </th>
+                      <th style="width: 12%">
+                          Tgl. Selesai
+                      </th>
+                      <th class="text-center">
+                          Progress
+                      </th>
+                      <th style="width: 25%">
+                      </th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for proyek in proyeks %}
+                  <tr>
+                      <td>
+                          {{ proyek.id }}
+                      </td>
+                      <td>
+                          <a>
+                              {{ proyek.nama_proyek }}
+                          </a>
+                          <br/>
+                          <small>
+                              {{ proyek.lokasi }}
+                          </small>
+                      </td>
+                      <td>
+                        {{ proyek.tgl_mulai }}
+                      </td>
+                      <td>
+                        {{ proyek.tgl_selesai }}
+                      </td>
+                      <td class="project_progress">
+                        <div class="progress progress-sm">
+                              <div class="progress-bar bg-green" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                              </div>
+                          </div>
+                          <small>
+                              100% Complete
+                          </small>
+                      </td>
+                      <td class="project-actions text-right">
+                          <a class="btn btn-primary btn-sm" href="/proyek/{{ proyek.id }}">
+                              <i class="fas fa-folder">
+                              </i>
+                              Lihat
+                          </a>
+                          <a class="btn btn-info btn-sm" href="/proyek/edit/{{ proyek.id }}">
+                              <i class="fas fa-pencil-alt">
+                              </i>
+                              Edit
+                          </a>
+                          <a class="btn btn-danger btn-sm" href="/proyek/delete/{{ proyek.id }}">
+                              <i class="fas fa-trash">
+                              </i>
+                              Hapus
+                          </a>
+                      </td>
+                  </tr>
+                  {% endfor %}
+                  
+              </tbody>
+          </table>
+        </div>
+        <!-- /.card-body -->
+      </div>
+      <!-- /.card -->
+      
+      <div class="modal fade" id="modal-default">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Tambah Proyek</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <!-- form start -->
+            <form action="/proyek" method="POST">
+              <div class="modal-body">
+                <div class="form-group">
+                  <label for="exampleInputEmail1">Nama Proyek</label>
+                  <input type="text" class="form-control" name="nama_proyek" placeholder="Masukkan nama proyek">
+                </div>
+                <div class="form-group">
+                  <label for="exampleInputEmail1">Lokasi Proyek</label>
+                  <input type="text" class="form-control" name="lokasi" placeholder="Masukkan alamat">
+                </div>
+                <div class="form-group">
+                  <label for="exampleInputEmail1">Nama Klien</label>
+                  <input type="text" class="form-control" name="nama_klien" placeholder="Masukkan alamat">
+                </div>
+                <div class="form-group">
+                  <label for="exampleInputEmail1">No. HP Klien</label>
+                  <input type="text" class="form-control" name="no_hp" placeholder="Masukkan alamat">
+                </div>
+                  <div class="row">
+                    <div class="col">
+                      <div class="form-group">
+                        <label for="exampleInputEmail1">Tanggal Mulai</label>
+                        <input type="date" class="form-control" name="tgl_mulai">
+                      </div>
+                    </div>
+                    <div class="col">
+                      <div class="form-group">
+                        <label for="exampleInputEmail1">Perkiraan Tanggal Selesai</label>
+                        <input type="date" class="form-control" name="tgl_selesai">
+                      </div>
+                    </div>
+                  </div>
+              </div>
+              <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Save changes</button>
+              </div>
+            </form>
+            
+            <!-- /.card -->
+
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+{% endblock %}
