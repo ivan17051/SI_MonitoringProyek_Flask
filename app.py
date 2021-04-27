@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request, redirect
+from flask import Flask, render_template, url_for, request, redirect, flash
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, date
 from babel.numbers import format_number
@@ -6,6 +6,7 @@ from babel.numbers import format_number
 from coba import coba
 
 app = Flask(__name__)
+app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 db = SQLAlchemy(app)
 
@@ -185,13 +186,13 @@ def pemasukan():
     else:
         pemasukan = Pemasukan.query.order_by(Pemasukan.date_created).all()
         # pemasukan.jumlah = format_number(pemasukan.jumlah, locale='id_ID')
-        return render_template('pemasukan/pemasukan.html', pemasukans = pemasukan)
+        return render_template('/pemasukan/pemasukan.html', pemasukans = pemasukan)
 
 @app.route('/pemasukan/<int:id>')
 def pemasukan_detail(id):
     pemasukan = Pemasukan.query.get_or_404(id)
     jumlah = format_number(pemasukan.jumlah, locale='id_ID')
-    return render_template('pemasukan/pemasukan_detail.html', pemasukan = pemasukan, jumlah=jumlah)
+    return render_template('/pemasukan/pemasukan_detail.html', pemasukan = pemasukan, jumlah=jumlah)
 
 @app.route('/pemasukan/add', methods=['POST', 'GET'])
 def pemasukan_add():
@@ -207,6 +208,7 @@ def pemasukan_add():
         try:
             db.session.add(new_pemasukan)
             db.session.commit()
+            flash('Data Pemasukan Berhasil Ditambahkan', 'bg-success')
             return redirect('/pemasukan')
         except:
             return 'Error input data'
@@ -214,14 +216,39 @@ def pemasukan_add():
         sub = SubkategoriNeraca.query.filter_by(kategori='Pemasukan').all()
         proyek = Proyek.query.all()
 
-        return render_template('pemasukan/pemasukan_add.html', subkategori = sub, proyeks = proyek)
+        return render_template('/pemasukan/pemasukan_add.html', subkategori = sub, proyeks = proyek)
+
+@app.route('/pemasukan/edit/<int:id>', methods=['POST', 'GET'])
+def pemasukan_edit(id):
+    pemasukan = Pemasukan.query.get_or_404(id)
+    if request.method == 'POST':
+        pemasukan.bukti=request.form['bukti']
+        pemasukan.nama_proyek=request.form['nama_proyek']
+        pemasukan.tanggal=request.form['tanggal']
+        pemasukan.subkategori=request.form['subkategori']
+        pemasukan.deskripsi=request.form['deskripsi']
+        pemasukan.jumlah=request.form['jumlah']
+
+        try:
+            db.session.commit()
+            flash('Data Pemasukan Berhasil Diubah', 'bg-success')
+            return redirect('/pemasukan')
+        except:
+            flash('Data Gagal Diubah, Silahkan Coba Lagi', 'bg-danger')
+            return redirect('/pemasukan')
+    
+    else:
+        proyek = Proyek.query.all()
+        sub = SubkategoriNeraca.query.filter_by(kategori='Pemasukan').all()
+        return render_template('/pemasukan/pemasukan_edit.html', pemasukan = pemasukan, subkategori = sub, proyeks = proyek)
 
 @app.route('/pemasukan/delete/<int:id>')
-def del_pemasukan(id):
+def pemasukan_del(id):
     hapus_pemasukan = Pemasukan.query.get_or_404(id)
     try:
         db.session.delete(hapus_pemasukan)
         db.session.commit()
+        flash('Data Pemasukan Berhasil Dihapus', 'bg-success')
         return redirect('/pemasukan')
     except:
         return 'Error hapus data'
@@ -232,6 +259,8 @@ def del_pemasukan(id):
 @app.route('/pengeluaran')
 def pengeluaran():
     return render_template('pengeluaran/pengeluaran.html')
+
+
 
 if __name__=="__main__":
     app.run(debug=True)

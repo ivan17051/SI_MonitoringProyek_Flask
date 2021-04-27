@@ -53,13 +53,13 @@
               </div>
               <!-- /.card-header -->
               <!-- form start -->
-              <form action="/pemasukan/add" method="POST">
+              <form action="/pemasukan/edit/{{ pemasukan.id }}" method="POST">
                 <div class="card-body">
                     <div class="form-group">
                         <label>Proyek</label>
                         <select class="form-control" name="nama_proyek" style="width: 100%;">
                           {% for proyek in proyeks %}
-                          <option {% if pemasukan.nama_proyek %} value="{{ pemasukan.nama_proyek }}" selected {% endif %}>{{ proyek.nama_proyek }}</option>
+                          <option {% if pemasukan.nama_proyek == proyek.nama_proyek %} value="{{ proyek.nama_proyek }}" selected {% endif %}>{{ proyek.nama_proyek }}</option>
                           {% endfor %}
                         </select>
                       </div>
@@ -67,7 +67,7 @@
                         <div class="col">
                           <div class="form-group">
                           <label for="exampleInputEmail1">Tanggal</label>
-                          <input type="date" class="form-control" name="tanggal" value="{{tgl}}" placeholder="Masukkan alamat">
+                          <input type="date" class="form-control" name="tanggal" value="{{ pemasukan.tanggal }}">
                         </div>
                       </div>
                       <div class="col">  
@@ -75,7 +75,7 @@
                           <label>SubKategori</label>
                           <select class="form-control" name="subkategori" style="width: 100%;">
                             {% for sub in subkategori %}
-                            <option>{{ sub.nama }}</option>
+                            <option {% if pemasukan.subkategori == sub.nama %} value="{{ sub.nama }}" selected {% endif %}>{{ sub.nama }}</option>
                             {% endfor %}
                           </select>
                         </div>
@@ -83,11 +83,11 @@
                       </div>
                       <div class="form-group">
                       <label for="exampleInputEmail1">Deskripsi</label>
-                      <input type="text" class="form-control" name="deskripsi" value="{{desk}}" placeholder="Masukkan deskripsi">
+                      <input type="text" class="form-control" name="deskripsi" value="{{ pemasukan.deskripsi}}" placeholder="Masukkan deskripsi">
                       </div>
                       <div class="form-group">
                       <label for="exampleInputEmail1">Jumlah</label>
-                      <input type="text" class="form-control" name="jumlah" value="{{jumlah}}" placeholder="Masukkan jumlah">
+                      <input type="text" class="form-control" name="jumlah" value="{{ pemasukan.jumlah }}" placeholder="Masukkan jumlah">
                       </div>
                       <div class="form-group">
                         <label for="exampleInputFile">Foto Bukti</label>

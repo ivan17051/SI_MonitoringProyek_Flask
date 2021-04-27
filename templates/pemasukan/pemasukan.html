@@ -151,3 +151,20 @@
   </div>
   <!-- /.content-wrapper -->
 {% endblock %}
+
+{% block script %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+   {% if messages %}
+      {% for category, message in messages %}
+         <script>
+         $(document).Toasts('create', {
+          class: '{{ category }}',
+          title: 'Success',
+          icon: 'fas fa-check',
+          body: '{{ message }}'
+        })
+      </script>
+      {% endfor %}
+   {% endif %}
+{% endwith %}
+{% endblock %}
