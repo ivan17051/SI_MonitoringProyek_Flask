@@ -62,27 +62,28 @@
                   </tr>
               </thead>
               <tbody>
+                {% for pengeluaran in pengeluarans %}
                   <tr>
                       <td>
-                          #
+                          {{ pengeluaran.id }}
                       </td>
                       <td>
                           <a>
-                              Toko Multimegah
+                              {{ pengeluaran.nama_toko }}
                           </a>
                           <br/>
                           <small>
-                              Inventaris
+                              {{ pengeluaran.nama_proyek }}
                           </small>
                       </td>
                       <td>
-                          2020-11-25
+                          {{ pengeluaran.tanggal }}
                       </td>
                       <td>
-                          Rp. 200.000
+                          Rp. {{ pengeluaran.jumlah }}
                       </td>
                       <td class="project-actions text-right">
-                          <a class="btn btn-primary btn-sm" href="#">
+                          <a class="btn btn-primary btn-sm" href="/pengeluaran/{{ pengeluaran.id }}">
                               <i class="fas fa-folder">
                               </i>
                               Lihat
@@ -99,43 +100,7 @@
                           </a>
                       </td>
                   </tr>
-                  <tr>
-                      <td>
-                          #
-                      </td>
-                      <td>
-                          <a>
-                              Toko Indahjaya
-                          </a>
-                          <br/>
-                          <small>
-                              Perlengkapan
-                          </small>
-                      </td>
-                      <td>
-                          2020-11-25
-                      </td>
-                      <td>
-                          Rp. 3.000.000
-                      </td>
-                      <td class="project-actions text-right">
-                          <a class="btn btn-primary btn-sm" href="#">
-                              <i class="fas fa-folder">
-                              </i>
-                              Lihat
-                          </a>
-                          <a class="btn btn-info btn-sm" href="#">
-                              <i class="fas fa-pencil-alt">
-                              </i>
-                              Edit
-                          </a>
-                          <a class="btn btn-danger btn-sm" href="#">
-                              <i class="fas fa-trash">
-                              </i>
-                              Hapus
-                          </a>
-                      </td>
-                  </tr>
+                {% endfor %}
               </tbody>
           </table>
         </div>
@@ -145,6 +110,7 @@
 
       <div class="modal fade" id="modal-default">
         <div class="modal-dialog">
+          <form action="/pengeluaran" method="POST">
           <div class="modal-content">
             <div class="modal-header">
               <h4 class="modal-title">Tambah Pengeluaran</h4>
@@ -154,7 +120,6 @@
             </div>
             <div class="modal-body">
               <!-- form start -->
-              <form>
                 <div class="form-group">
                   <label for="exampleInputFile">Bukti</label>
                   <div class="input-group">
@@ -163,52 +128,17 @@
                       <label class="custom-file-label" for="exampleInputFile">Masukkan Bukti</label>
                     </div>
                     <div class="input-group-append">
-                      <span class="input-group-text btn">Upload</span>
+                      <button type='submit' action="/pengeluaran" class="input-group-text btn-primary">Scan</button>
                     </div>
                   </div>
                 </div>
-                <div class="row">
-                  <div class="col">
-                    <div class="form-group">
-                    <label for="exampleInputEmail1">Tanggal</label>
-                    <input type="date" class="form-control" id="exampleInputEmail1" placeholder="Masukkan alamat">
-                  </div>
-                </div>
-                <div class="col">  
-                  <div class="form-group">
-                    <label>SubKategori</label>
-                    <select class="form-control" style="width: 100%;">
-                      <option selected="selected">Alabama</option>
-                      <option>Alaska</option>
-                      <option>California</option>
-                      <option>Delaware</option>
-                      <option>Tennessee</option>
-                      <option>Texas</option>
-                      <option>Washington</option>
-                    </select>
-                  </div>
-                </div>
-                </div>
-                <div class="form-group">
-                <label for="exampleInputEmail1">Nama Toko</label>
-                <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Masukkan nama toko">
-                </div>
-                <div class="form-group">
-                <label for="exampleInputEmail1">Barang</label>
-                <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Masukkan barang">
-                </div>
-                <div class="form-group">
-                <label for="exampleInputEmail1">Jumlah</label>
-                <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Masukkan jumlah">
-                </div>
-                
-              </form>
             </div>
             <div class="modal-footer justify-content-between">
               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary">Save changes</button>
+              <a href="/pengeluaran/add" class="btn btn-primary">Isi Manual</a>
             </div>
           </div>
+          </form>
           <!-- /.modal-content -->
         </div>
         <!-- /.modal-dialog -->
@@ -222,9 +152,18 @@
 {% endblock %}
 
 {% block script %}
-<script>
-   $(document).ready(function(){
-        $("#modal-default").modal('show');
-    });
-</script>
+{% with messages = get_flashed_messages(with_categories=true) %}
+   {% if messages %}
+      {% for category, message in messages %}
+         <script>
+         $(document).Toasts('create', {
+          class: '{{ category }}',
+          title: 'Success',
+          icon: 'fas fa-check',
+          body: '{{ message }}'
+        })
+      </script>
+      {% endfor %}
+   {% endif %}
+{% endwith %}
 {% endblock %}

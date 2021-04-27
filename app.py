@@ -258,8 +258,40 @@ def pemasukan_del(id):
 #|=============================================|
 @app.route('/pengeluaran')
 def pengeluaran():
-    return render_template('pengeluaran/pengeluaran.html')
+    pengeluaran = Pengeluaran.query.all()
+    return render_template('pengeluaran/pengeluaran.html', pengeluarans = pengeluaran)
 
+@app.route('/pengeluaran/<int:id>')
+def pengeluaran_detail(id):
+    pengeluaran = Pengeluaran.query.get_or_404(id)
+    jumlah = format_number(pengeluaran.jumlah, locale='id_ID')
+    return render_template('/pengeluaran/pengeluaran_detail.html', pengeluaran = pengeluaran, jumlah=jumlah)
+
+
+@app.route('/pengeluaran/add', methods=['POST', 'GET'])
+def pengeluaran_add():
+    if request.method == 'POST':
+        new_pengeluaran = Pengeluaran(
+            bukti=request.form['bukti'],
+            nama_proyek=request.form['nama_proyek'],
+            tanggal=request.form['tanggal'],
+            subkategori=request.form['subkategori'],
+            nama_toko=request.form['nama_toko'],
+            deskripsi=request.form['barang'],
+            jumlah=request.form['jumlah']
+        )
+        try:
+            db.session.add(new_pengeluaran)
+            db.session.commit()
+            flash('Data Pengeluaran Berhasil Ditambahkan', 'bg-success')
+            return redirect('/pengeluaran')
+        except:
+            return 'Error input data'
+    else:
+        sub = SubkategoriNeraca.query.filter_by(kategori='Pengeluaran').all()
+        proyek = Proyek.query.all()
+
+        return render_template('/pengeluaran/pengeluaran_add.html', subkategori = sub, proyeks = proyek)
 
 
 if __name__=="__main__":
