@@ -1,6 +1,7 @@
 from flask import Flask, render_template, url_for, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, date
+from babel.numbers import format_number
 
 from coba import coba
 
@@ -88,12 +89,12 @@ def proyek():
         return render_template('proyek/proyek.html', proyeks = tasks)
 
 @app.route('/proyek/<int:id>')
-def detail(id):
+def proyek_detail(id):
     tasks = Proyek.query.get_or_404(id)
     return render_template('proyek/proyek_detail.html', proyek = tasks)
 
 @app.route('/proyek/edit/<int:id>', methods=['POST', 'GET'])
-def edit(id):
+def proyek_edit(id):
     task = Proyek.query.get_or_404(id)
     if request.method == 'POST':
         task.nama_proyek=request.form['nama_proyek']
@@ -110,7 +111,7 @@ def edit(id):
         return render_template('proyek/proyek_edit.html', proyek = task)
 
 @app.route('/proyek/delete/<int:id>')
-def delete(id):
+def proyek_delete(id):
     hapus_proyek = Proyek.query.get_or_404(id)
     try:
         db.session.delete(hapus_proyek)
@@ -167,37 +168,35 @@ def add_sub_rab():
 #|=============================================|
 #|==================PEMASUKAN==================|
 #|=============================================|
-@app.route('/pemasukan/scan', methods=['GET'])
-def pemasukan_scan():
-    sub = SubkategoriNeraca.query.filter_by(kategori='Pemasukan').all()
-    proyek = Proyek.query.all()
-    
-    nilai = coba(2)
-    tgl = nilai[1]
-    desk = nilai[2]
-    return render_template('pemasukan/pemasukan_add.html', subkategori = sub, proyeks = proyek, tgl = tgl, desk = desk)
-
-@app.route('/pemasukan/add', methods=['POST'])
-def pemasukan_add():
-    new_pemasukan = Pemasukan(
-        bukti=request.form['bukti'],
-        nama_proyek=request.form['nama_proyek'],
-        tanggal=request.form['tanggal'],
-        subkategori=request.form['subkategori'],
-        deskripsi=request.form['deskripsi'],
-        jumlah=request.form['jumlah']
-    )
-    try:
-        db.session.add(new_task)
-        db.session.commit()
-        return redirect('/pemasukan')
-    except:
-        return 'Error input data'
-
 @app.route('/pemasukan', methods=['POST', 'GET'])
 def pemasukan():
     if request.method == 'POST':
-        new_task = Pemasukan(
+        try:
+            sub = SubkategoriNeraca.query.filter_by(kategori='Pemasukan').all()
+            proyek = Proyek.query.all()
+
+            nilai = coba(2)
+            jum = nilai[0]
+            tgl = nilai[1]
+            desk = nilai[2]
+            return render_template('pemasukan/pemasukan_add.html', subkategori = sub, proyeks = proyek, tgl = tgl, desk = desk, jumlah = jum)
+        except:
+            return 'Error membaca gambar'
+    else:
+        pemasukan = Pemasukan.query.order_by(Pemasukan.date_created).all()
+        # pemasukan.jumlah = format_number(pemasukan.jumlah, locale='id_ID')
+        return render_template('pemasukan/pemasukan.html', pemasukans = pemasukan)
+
+@app.route('/pemasukan/<int:id>')
+def pemasukan_detail(id):
+    pemasukan = Pemasukan.query.get_or_404(id)
+    jumlah = format_number(pemasukan.jumlah, locale='id_ID')
+    return render_template('pemasukan/pemasukan_detail.html', pemasukan = pemasukan, jumlah=jumlah)
+
+@app.route('/pemasukan/add', methods=['POST', 'GET'])
+def pemasukan_add():
+    if request.method == 'POST':
+        new_pemasukan = Pemasukan(
             bukti=request.form['bukti'],
             nama_proyek=request.form['nama_proyek'],
             tanggal=request.form['tanggal'],
@@ -206,16 +205,16 @@ def pemasukan():
             jumlah=request.form['jumlah']
         )
         try:
-            db.session.add(new_task)
+            db.session.add(new_pemasukan)
             db.session.commit()
             return redirect('/pemasukan')
         except:
             return 'Error input data'
     else:
-        tasks = Pemasukan.query.order_by(Pemasukan.date_created).all()
         sub = SubkategoriNeraca.query.filter_by(kategori='Pemasukan').all()
         proyek = Proyek.query.all()
-        return render_template('pemasukan/pemasukan.html', pemasukans = tasks, subkategori = sub, proyeks = proyek)
+
+        return render_template('pemasukan/pemasukan_add.html', subkategori = sub, proyeks = proyek)
 
 @app.route('/pemasukan/delete/<int:id>')
 def del_pemasukan(id):

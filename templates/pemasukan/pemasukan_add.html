@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block head %}<title>CV BKS | Edit Pemasukan</title>{% endblock %}
+{% block head %}<title>CV BKS | Tambah Pemasukan</title>{% endblock %}
 {% block status_neraca %} active {% endblock %}
 {% block status_pemasukan %} active {% endblock %}
 {% block body %}
@@ -11,13 +11,13 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Edit Pemasukan</h1>
+            <h1>Tambah Pemasukan</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="/">Home</a></li>
               <li class="breadcrumb-item"><a href="/pemasukan">Pemasukan</a></li>
-              <li class="breadcrumb-item active">Edit Pemasukan</li>
+              <li class="breadcrumb-item active">Tambah Pemasukan</li>
             </ol>
           </div>
         </div>
@@ -59,7 +59,7 @@
                         <label>Proyek</label>
                         <select class="form-control" name="nama_proyek" style="width: 100%;">
                           {% for proyek in proyeks %}
-                          <option {% if pemasukan.nama_proyek %} value="{{ pemasukan.nama_proyek }}" selected {% endif %}>{{ proyek.nama_proyek }}</option>
+                          <option>{{ proyek.nama_proyek }}</option>
                           {% endfor %}
                         </select>
                       </div>

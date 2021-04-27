@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block head %}<title>CV BKS | Detail Pemasukan</title>{% endblock %}
+{% block status_neraca %} active {% endblock %}
+{% block status_pemasukan %} active {% endblock %}
+{% block body %}
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>Detail Pemasukan</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="/">Home</a></li>
+              <li class="breadcrumb-item"><a href="/pemasukan">Pemasukan</a></li>
+              <li class="breadcrumb-item active">Detail Pemasukan</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <!-- left column -->
+          <div class="col-md-6">
+            <!-- Form Element sizes -->
+            <div class="card card-success">
+              <div class="card-header">
+                <h3 class="card-title">Foto Bukti</h3>
+              </div>
+              <div class="card-body">
+                <img class="img-fluid pad" src="{{url_for('static', filename='dist/img/photo2.png')}}" alt="Foto Bukti">
+                <div class="form-group">
+                  <br>
+                  <input class="form-control" name="tanggal" value="{{pemasukan.bukti}}" disabled>
+                </div>
+              </div>
+              
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+          <!--/.col (left) -->
+          <!-- right column -->
+          
+          <div class="col-md-6">
+            <!-- general form elements -->
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Deskripsi</h3>
+              </div>
+              <!-- /.card-header -->
+              <!-- form start -->
+                <div class="card-body">
+                    <div class="form-group">
+                        <label>Proyek</label>
+                        <input class="form-control" name="tanggal" value="{{pemasukan.nama_proyek}}" disabled>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label>Tanggal</label>
+                                <input class="form-control" name="tanggal" value="{{pemasukan.tanggal}}" disabled>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label>SubKategori</label>
+                                <input class="form-control" name="tanggal" value="{{pemasukan.subkategori}}" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Deskripsi</label>
+                        <input class="form-control" name="tanggal" value="{{pemasukan.deskripsi}}" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Jumlah</label>
+                        <input class="form-control" name="tanggal" value="Rp {{ jumlah }}" disabled>
+                    </div>
+                </div>
+                <!-- /.card-body -->
+
+                <div class="card-footer">
+                  <a href="/pemasukan" class="btn btn-warning float-right">Kembali</a>
+                </div>
+            </div>
+            <!-- /.card -->
+          </div>
+          <!--/.col (right) -->
+        </div>
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+{% endblock %}
+{% block script %}{% endblock %}

@@ -16,7 +16,6 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="/">Home</a></li>
-              <li class="breadcrumb-item"><a href="/">Neraca Keuangan</a></li>
               <li class="breadcrumb-item active">Pemasukan</li>
             </ol>
           </div>
@@ -84,12 +83,12 @@
                           Rp {{ pemasukan.jumlah }}
                       </td>
                       <td class="project-actions text-right">
-                          <a class="btn btn-primary btn-sm" href="#">
+                          <a class="btn btn-primary btn-sm" href="/pemasukan/{{ pemasukan.id }}">
                               <i class="fas fa-folder">
                               </i>
                               Lihat
                           </a>
-                          <a class="btn btn-info btn-sm" href="#">
+                          <a class="btn btn-info btn-sm" href="/pemasukan/edit/{{ pemasukan.id }}">
                               <i class="fas fa-pencil-alt">
                               </i>
                               Edit
@@ -110,7 +109,6 @@
       <!-- /.card -->
 
       <div class="modal fade" id="modal-default">
-        <form action="/pemasukan" method="POST">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
@@ -121,63 +119,29 @@
             </div>
             <div class="modal-body">
               <!-- form start -->
-              
+              <form action="/pemasukan" method="POST">
                 <div class="form-group">
-                  <label for="exampleInputFile">Bukti</label>
+                  <label for="exampleInputFile">Foto Bukti</label>
                   <div class="input-group">
                     <div class="custom-file">
                       <input type="file" class="custom-file-input" name="bukti">
-                      <label class="custom-file-label" for="exampleInputFile">Masukkan Bukti</label>
+                      <label class="custom-file-label" for="exampleInputFile">Masukkan Foto Bukti</label>
                     </div>
                     <div class="input-group-append">
-                      <button action="/pemasukan/scan" class="input-group-text btn">Upload</button>
+                      <button type='submit' action="/pemasukan" class="input-group-text btn-primary">Scan</button>
                     </div>
                   </div>
                 </div>
-              
-                <div class="form-group">
-                  <label>Proyek</label>
-                  <select class="form-control" name="nama_proyek" style="width: 100%;">
-                    {% for proyek in proyeks %}
-                    <option>{{ proyek.nama_proyek }}</option>
-                    {% endfor %}
-                  </select>
-                </div>
-                <div class="row">
-                  <div class="col">
-                    <div class="form-group">
-                    <label for="exampleInputEmail1">Tanggal</label>
-                    <input type="date" class="form-control" name="tanggal" value="{{tgl}}" placeholder="Masukkan alamat">
-                  </div>
-                </div>
-                <div class="col">  
-                  <div class="form-group">
-                    <label>SubKategori</label>
-                    <select class="form-control" name="subkategori" style="width: 100%;">
-                      {% for sub in subkategori %}
-                      <option>{{ sub.nama }}</option>
-                      {% endfor %}
-                    </select>
-                  </div>
-                </div>
-                </div>
-                <div class="form-group">
-                <label for="exampleInputEmail1">Deskripsi</label>
-                <input type="text" class="form-control" name="deskripsi" value="{{desk}}" placeholder="Masukkan deskripsi">
-                </div>
-                <div class="form-group">
-                <label for="exampleInputEmail1">Jumlah</label>
-                <input type="text" class="form-control" name="jumlah" placeholder="Masukkan jumlah">
-                </div>
+              </form>
             </div>
             <div class="modal-footer justify-content-between">
               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              <button type="submit" class="btn btn-primary">Save changes</button>
+              <a href="/pemasukan/add" class="btn btn-primary">Isi Manual</a>
             </div>
           </div>
           <!-- /.modal-content -->
         </div>
-        </form>
+        
         <!-- /.modal-dialog -->
       </div>
       <!-- /.modal -->
