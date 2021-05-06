@@ -88,12 +88,12 @@
                               </i>
                               Lihat
                           </a>
-                          <a class="btn btn-info btn-sm" href="#">
+                          <a class="btn btn-info btn-sm" href="/pengeluaran/edit/{{ pengeluaran.id }}">
                               <i class="fas fa-pencil-alt">
                               </i>
                               Edit
                           </a>
-                          <a class="btn btn-danger btn-sm" href="#">
+                          <a class="btn btn-danger btn-sm" href="/pengeluaran/delete/{{ pengeluaran.id }}">
                               <i class="fas fa-trash">
                               </i>
                               Hapus
@@ -110,7 +110,7 @@
 
       <div class="modal fade" id="modal-default">
         <div class="modal-dialog">
-          <form action="/pengeluaran" method="POST">
+          <form action="/pengeluaran" method="POST" enctype="multipart/form-data">
           <div class="modal-content">
             <div class="modal-header">
               <h4 class="modal-title">Tambah Pengeluaran</h4>
@@ -124,11 +124,11 @@
                   <label for="exampleInputFile">Bukti</label>
                   <div class="input-group">
                     <div class="custom-file">
-                      <input type="file" class="custom-file-input" id="exampleInputFile">
+                      <input type="file" class="custom-file-input" name="bukti">
                       <label class="custom-file-label" for="exampleInputFile">Masukkan Bukti</label>
                     </div>
                     <div class="input-group-append">
-                      <button type='submit' action="/pengeluaran" class="input-group-text btn-primary">Scan</button>
+                      <input type='submit' class="input-group-text btn-primary" value="Scan">
                     </div>
                   </div>
                 </div>
@@ -158,8 +158,8 @@
          <script>
          $(document).Toasts('create', {
           class: '{{ category }}',
-          title: 'Success',
-          icon: 'fas fa-check',
+          title: '{% if category == "bg-success" %}Success{% else %}Failed{% endif %}',
+          icon: 'fas {% if category == "bg-success" %}fa-check {% else %}fa-times{% endif %}',
           body: '{{ message }}'
         })
       </script>

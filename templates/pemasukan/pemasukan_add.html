@@ -36,7 +36,7 @@
                 <h3 class="card-title">Foto Bukti</h3>
               </div>
               <div class="card-body">
-                <img class="img-fluid pad" src="{{url_for('static', filename='dist/img/photo2.png')}}" alt="Photo">
+                <img class="img-fluid pad" src="{{url_for('static', filename=bukti)}}" alt="Tidak Ada Foto Bukti">
               </div>
               <!-- /.card-body -->
             </div>
@@ -53,7 +53,7 @@
               </div>
               <!-- /.card-header -->
               <!-- form start -->
-              <form action="/pemasukan/add" method="POST">
+              <form action="/pemasukan/add" method="POST" enctype="multipart/form-data">
                 <div class="card-body">
                     <div class="form-group">
                         <label>Proyek</label>
@@ -89,14 +89,24 @@
                       <label for="exampleInputEmail1">Jumlah</label>
                       <input type="text" class="form-control" name="jumlah" value="{{jumlah}}" placeholder="Masukkan jumlah">
                       </div>
+
+                      <input type="text" class="form-control" name="cekbukti" value="{{bukti}}" hidden>
+                        
                       <div class="form-group">
-                        <label for="exampleInputFile">Foto Bukti</label>
+                        <label for="exampleInputEmail1">Foto Bukti</label>
                         <div class="input-group">
                           <div class="custom-file">
                             <input type="file" class="custom-file-input" name="bukti">
-                            <label class="custom-file-label" for="exampleInputFile">Masukkan Foto Bukti</label>
+                            <label class="custom-file-label" for="exampleInputFile">
+                              {% if bukti %}
+                              {{bukti}}
+                              {% else %}
+                              Masukkan Foto Bukti
+                              {% endif %}
+                            </label>
                           </div>
                         </div>
+                        
                       </div>
                 </div>
                 <!-- /.card-body -->
@@ -118,4 +128,19 @@
   </div>
   <!-- /.content-wrapper -->
 {% endblock %}
-{% block script %}{% endblock %}
+{% block script %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+   {% if messages %}
+      {% for category, message in messages %}
+         <script>
+         $(document).Toasts('create', {
+          class: 'bg-success',
+          title: 'Success',
+          icon: 'fas fa-check',
+          body: '{{ message }}'
+        })
+      </script>
+      {% endfor %}
+   {% endif %}
+{% endwith %}
+{% endblock %}

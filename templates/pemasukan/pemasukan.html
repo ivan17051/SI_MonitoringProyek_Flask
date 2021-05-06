@@ -119,7 +119,7 @@
             </div>
             <div class="modal-body">
               <!-- form start -->
-              <form action="/pemasukan" method="POST">
+              <form action="/pemasukan" method="POST" enctype="multipart/form-data">
                 <div class="form-group">
                   <label for="exampleInputFile">Foto Bukti</label>
                   <div class="input-group">
@@ -128,7 +128,7 @@
                       <label class="custom-file-label" for="exampleInputFile">Masukkan Foto Bukti</label>
                     </div>
                     <div class="input-group-append">
-                      <button type='submit' action="/pemasukan" class="input-group-text btn-primary">Scan</button>
+                      <input type='submit' class="input-group-text btn-primary" value="Scan">
                     </div>
                   </div>
                 </div>
@@ -159,8 +159,8 @@
          <script>
          $(document).Toasts('create', {
           class: '{{ category }}',
-          title: 'Success',
-          icon: 'fas fa-check',
+          title: '{% if category == "bg-success" %}Success{% else %}Failed{% endif %}',
+          icon: 'fas {% if category == "bg-success" %}fa-check {% else %}fa-times{% endif %}',
           body: '{{ message }}'
         })
       </script>

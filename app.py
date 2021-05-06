@@ -2,12 +2,15 @@ from flask import Flask, render_template, url_for, request, redirect, flash
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, date
 from babel.numbers import format_number
+import os
 
 from coba import coba
 
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+app.config['UPLOAD_PATH'] = 'E:/Ivan/TA/Aplikasi/Web/SI_MonitoringProyek_Flask/static/media/'
+app.config['DELETE_PATH'] = 'E:/Ivan/TA/Aplikasi/Web/SI_MonitoringProyek_Flask/static/'
 db = SQLAlchemy(app)
 
 class Proyek(db.Model):
@@ -125,7 +128,7 @@ def proyek_delete(id):
 def neraca(id):
     tgl = date.today()
     tasks = Proyek.query.get_or_404(id)
-    pemasukan = Pemasukan.query.filter_by(nama_proyek=tasks.nama_proyek).all()
+    pemasukan = Pemasukan.query.filter_by(nama_proyek=tasks.nama_proyek).group_by(Pemasukan.subkategori).all()
     return render_template('proyek/neraca.html', proyek = tasks, tanggal = tgl, pemasukans = pemasukan)
 
 
@@ -176,13 +179,22 @@ def pemasukan():
             sub = SubkategoriNeraca.query.filter_by(kategori='Pemasukan').all()
             proyek = Proyek.query.all()
 
+            f = request.files['bukti']
+            f.save(os.path.join(app.config['UPLOAD_PATH'], f.filename))
+            Current_Date = datetime.now().strftime("%d-%b-%Y_%H.%M")
+            nama = r'Pemasukan_'+ str(Current_Date) +'.png'
+            os.rename(app.config['UPLOAD_PATH'] + f.filename, app.config['UPLOAD_PATH'] + nama)
+            nama = r'media/'+ nama
+            
             nilai = coba(2)
             jum = nilai[0]
             tgl = nilai[1]
             desk = nilai[2]
-            return render_template('pemasukan/pemasukan_add.html', subkategori = sub, proyeks = proyek, tgl = tgl, desk = desk, jumlah = jum)
+            flash('Foto Bukti Berhasil Discan', 'bg-success')
+            return render_template('/pemasukan/pemasukan_add.html', subkategori = sub, proyeks = proyek, tgl = tgl, desk = desk, jumlah = jum, bukti = nama)
         except:
-            return 'Error membaca gambar'
+            flash('Foto Bukti Gagal Discan', 'bg-danger')
+            return redirect('/pemasukan')
     else:
         pemasukan = Pemasukan.query.order_by(Pemasukan.date_created).all()
         # pemasukan.jumlah = format_number(pemasukan.jumlah, locale='id_ID')
@@ -197,8 +209,18 @@ def pemasukan_detail(id):
 @app.route('/pemasukan/add', methods=['POST', 'GET'])
 def pemasukan_add():
     if request.method == 'POST':
+        if request.form['cekbukti']:
+            nama = request.form['cekbukti']
+        else:
+            f = request.files['bukti']
+            f.save(os.path.join(app.config['UPLOAD_PATH'], f.filename))
+            Current_Date = datetime.now().strftime("%d-%b-%Y_%H.%M")
+            nama = r'Pemasukan_'+ str(Current_Date) +'.png'
+            os.rename(app.config['UPLOAD_PATH'] + f.filename, app.config['UPLOAD_PATH'] + nama)
+            nama = r'media/'+ nama
+
         new_pemasukan = Pemasukan(
-            bukti=request.form['bukti'],
+            bukti=nama,
             nama_proyek=request.form['nama_proyek'],
             tanggal=request.form['tanggal'],
             subkategori=request.form['subkategori'],
@@ -211,7 +233,8 @@ def pemasukan_add():
             flash('Data Pemasukan Berhasil Ditambahkan', 'bg-success')
             return redirect('/pemasukan')
         except:
-            return 'Error input data'
+            flash('Data Gagal Ditambahkan, Silahkan Coba Lagi', 'bg-danger')
+            return redirect('/pemasukan')
     else:
         sub = SubkategoriNeraca.query.filter_by(kategori='Pemasukan').all()
         proyek = Proyek.query.all()
@@ -222,7 +245,17 @@ def pemasukan_add():
 def pemasukan_edit(id):
     pemasukan = Pemasukan.query.get_or_404(id)
     if request.method == 'POST':
-        pemasukan.bukti=request.form['bukti']
+        f = request.files['bukti']
+        if f:
+            if pemasukan.bukti:
+                os.remove(os.path.join(app.config['DELETE_PATH'], pemasukan.bukti))
+            f.save(os.path.join(app.config['UPLOAD_PATH'], f.filename))
+            Current_Date = datetime.now().strftime("%d-%b-%Y_%H.%M")
+            nama = r'Pemasukan_'+ str(Current_Date) +'.png'
+            os.rename(app.config['UPLOAD_PATH'] + f.filename, app.config['UPLOAD_PATH'] + nama)
+            nama = r'media/'+ nama
+            pemasukan.bukti=nama
+
         pemasukan.nama_proyek=request.form['nama_proyek']
         pemasukan.tanggal=request.form['tanggal']
         pemasukan.subkategori=request.form['subkategori']
@@ -246,20 +279,44 @@ def pemasukan_edit(id):
 def pemasukan_del(id):
     hapus_pemasukan = Pemasukan.query.get_or_404(id)
     try:
+        os.remove(os.path.join(app.config['DELETE_PATH'], hapus_pemasukan.bukti))
         db.session.delete(hapus_pemasukan)
         db.session.commit()
         flash('Data Pemasukan Berhasil Dihapus', 'bg-success')
         return redirect('/pemasukan')
     except:
-        return 'Error hapus data'
+        flash('Data Pemasukan Gagal Dihapus', 'bg-danger')
+        return redirect('/pemasukan')
 
 #|=============================================|
 #|=================PENGELUARAN=================|
 #|=============================================|
-@app.route('/pengeluaran')
+@app.route('/pengeluaran', methods=['POST', 'GET'])
 def pengeluaran():
-    pengeluaran = Pengeluaran.query.all()
-    return render_template('pengeluaran/pengeluaran.html', pengeluarans = pengeluaran)
+    if request.method == 'POST':
+        try:
+            sub = SubkategoriNeraca.query.filter_by(kategori='Pengeluaran').all()
+            proyek = Proyek.query.all()
+
+            f = request.files['bukti']
+            f.save(os.path.join(app.config['UPLOAD_PATH'], f.filename))
+            Current_Date = datetime.now().strftime("%d-%b-%Y_%H.%M")
+            nama = r'Pengeluaran_'+ str(Current_Date) +'.png'
+            os.rename(app.config['UPLOAD_PATH'] + f.filename, app.config['UPLOAD_PATH'] + nama)
+            nama = r'media/'+ nama
+            
+            nilai = coba(2)
+            jum = nilai[0]
+            tgl = nilai[1]
+            desk = nilai[2]
+            flash('Foto Bukti Berhasil Discan', 'bg-success')
+            return render_template('/pengeluaran/pengeluaran_add.html', subkategori = sub, proyeks = proyek, tgl = tgl, desk = desk, jumlah = jum, bukti = nama)
+        except:
+            flash('Foto Bukti Gagal Discan', 'bg-danger')
+            return redirect('/pengeluaran')
+    else:
+        pengeluaran = Pengeluaran.query.all()
+        return render_template('pengeluaran/pengeluaran.html', pengeluarans = pengeluaran)
 
 @app.route('/pengeluaran/<int:id>')
 def pengeluaran_detail(id):
@@ -267,17 +324,26 @@ def pengeluaran_detail(id):
     jumlah = format_number(pengeluaran.jumlah, locale='id_ID')
     return render_template('/pengeluaran/pengeluaran_detail.html', pengeluaran = pengeluaran, jumlah=jumlah)
 
-
 @app.route('/pengeluaran/add', methods=['POST', 'GET'])
 def pengeluaran_add():
     if request.method == 'POST':
+        if request.form['cekbukti']:
+            nama = request.form['cekbukti']
+        else:
+            f = request.files['bukti']
+            f.save(os.path.join(app.config['UPLOAD_PATH'], f.filename))
+            Current_Date = datetime.now().strftime("%d-%b-%Y_%H.%M")
+            nama = r'Pengeluaran_'+ str(Current_Date) +'.png'
+            os.rename(app.config['UPLOAD_PATH'] + f.filename, app.config['UPLOAD_PATH'] + nama)
+            nama = r'media/'+ nama
+        
         new_pengeluaran = Pengeluaran(
-            bukti=request.form['bukti'],
+            bukti=nama,
             nama_proyek=request.form['nama_proyek'],
             tanggal=request.form['tanggal'],
             subkategori=request.form['subkategori'],
             nama_toko=request.form['nama_toko'],
-            deskripsi=request.form['barang'],
+            deskripsi=request.form['deskripsi'],
             jumlah=request.form['jumlah']
         )
         try:
@@ -292,6 +358,53 @@ def pengeluaran_add():
         proyek = Proyek.query.all()
 
         return render_template('/pengeluaran/pengeluaran_add.html', subkategori = sub, proyeks = proyek)
+
+@app.route('/pengeluaran/edit/<int:id>', methods=['POST', 'GET'])
+def pengeluaran_edit(id):
+    pengeluaran = Pengeluaran.query.get_or_404(id)
+    if request.method == 'POST':
+        f = request.files['bukti']
+        if f:
+            if pengeluaran.bukti:
+                os.remove(os.path.join(app.config['DELETE_PATH'], pengeluaran.bukti))
+            f.save(os.path.join(app.config['UPLOAD_PATH'], f.filename))
+            Current_Date = datetime.now().strftime("%d-%b-%Y_%H.%M")
+            nama = r'Pengeluaran_'+ str(Current_Date) +'.png'
+            os.rename(app.config['UPLOAD_PATH'] + f.filename, app.config['UPLOAD_PATH'] + nama)
+            nama = r'media/'+ nama
+            pengeluaran.bukti=nama
+
+        pengeluaran.nama_proyek=request.form['nama_proyek']
+        pengeluaran.tanggal=request.form['tanggal']
+        pengeluaran.subkategori=request.form['subkategori']
+        pengeluaran.deskripsi=request.form['deskripsi']
+        pengeluaran.jumlah=request.form['jumlah']
+
+        try:
+            db.session.commit()
+            flash('Data Pengeluaran Berhasil Diubah', 'bg-success')
+            return redirect('/pengeluaran')
+        except:
+            flash('Data Gagal Diubah, Silahkan Coba Lagi', 'bg-danger')
+            return redirect('/pengeluaran')
+    
+    else:
+        proyek = Proyek.query.all()
+        sub = SubkategoriNeraca.query.filter_by(kategori='Pengeluaran').all()
+        return render_template('/pengeluaran/pengeluaran_edit.html', pengeluaran = pengeluaran, subkategori = sub, proyeks = proyek)
+
+@app.route('/pengeluaran/delete/<int:id>')
+def pengeluaran_del(id):
+    hapus_pengeluaran = Pengeluaran.query.get_or_404(id)
+    try:
+        os.remove(os.path.join(app.config['DELETE_PATH'], hapus_pengeluaran.bukti))
+        db.session.delete(hapus_pengeluaran)
+        db.session.commit()
+        flash('Data Pengeluaran Berhasil Dihapus', 'bg-success')
+        return redirect('/pengeluaran')
+    except:
+        flash('Data Pengeluaran Gagal Dihapus', 'bg-danger')
+        return redirect('/pengeluaran')
 
 
 if __name__=="__main__":

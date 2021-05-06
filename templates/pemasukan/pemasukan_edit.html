@@ -36,7 +36,7 @@
                 <h3 class="card-title">Foto Bukti</h3>
               </div>
               <div class="card-body">
-                <img class="img-fluid pad" src="{{url_for('static', filename='dist/img/photo2.png')}}" alt="Photo">
+                <img class="img-fluid pad" src="{{url_for('static', filename=pemasukan.bukti)}}" alt="Tidak Ada Foto Bukti">
               </div>
               <!-- /.card-body -->
             </div>
@@ -53,7 +53,7 @@
               </div>
               <!-- /.card-header -->
               <!-- form start -->
-              <form action="/pemasukan/edit/{{ pemasukan.id }}" method="POST">
+              <form action="/pemasukan/edit/{{ pemasukan.id }}" method="POST" enctype="multipart/form-data">
                 <div class="card-body">
                     <div class="form-group">
                         <label>Proyek</label>
@@ -93,8 +93,14 @@
                         <label for="exampleInputFile">Foto Bukti</label>
                         <div class="input-group">
                           <div class="custom-file">
-                            <input type="file" class="custom-file-input" name="bukti">
-                            <label class="custom-file-label" for="exampleInputFile">Masukkan Foto Bukti</label>
+                            <input type="file" class="custom-file-input" name="bukti" value="{{ pemasukan.bukti }}">
+                            <label class="custom-file-label" for="exampleInputFile">
+                              {% if pemasukan.bukti %}
+                              {{ pemasukan.bukti }}
+                              {% else %}
+                              Masukkan Foto Bukti
+                              {% endif %}
+                            </label>
                           </div>
                         </div>
                       </div>
