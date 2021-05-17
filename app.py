@@ -460,7 +460,9 @@ def pengeluaran_del(id):
         flash('Data Pengeluaran Gagal Dihapus', 'bg-danger')
         return redirect('/pengeluaran')
 
-
+#|=============================================|
+#|==================PERSIAPAN==================|
+#|=============================================|
 @app.route('/persiapan', methods=['POST', 'GET'])
 def persiapan():
     if request.method == 'POST':
@@ -530,6 +532,79 @@ def persiapan_del(id):
     except:
         flash('Data Persiapan Gagal Dihapus', 'bg-danger')
         return redirect('/persiapan')
+
+#|=============================================|
+#|=================ARSITEKTUR==================|
+#|=============================================|
+@app.route('/arsitektur', methods=['POST', 'GET'])
+def arsitektur():
+    if request.method == 'POST':
+
+        new_task = Arsitektur(
+            nama_proyek=request.form['nama_proyek'],
+            uraian=request.form['uraian'],
+            subkategori=request.form['subkategori'],
+            volume=request.form['volume'],
+            satuan=request.form['satuan'],
+            harga_satuan=request.form['harga_satuan'],
+            jumlah=request.form['jumlah']
+            )
+
+        try:
+            db.session.add(new_task)
+            db.session.commit()
+            flash('Data Arsitektur Berhasil Ditambahkan', 'bg-success')
+            return redirect('/arsitektur')
+        except:
+            flash('Data Arsitektur Tidak Berhasil Ditambahkan', 'bg-danger')
+            return redirect('/arsitektur')
+    else:
+        sub = SubkategoriRAB.query.filter_by(kategori='Arsitektur').all()
+        proyek = Proyek.query.all()
+        tasks = Arsitektur.query.order_by(Arsitektur.date_created).all()
+        return render_template('/rab/arsitektur/arsitektur.html', arsitekturs = tasks, subkategori = sub, proyeks = proyek)
+
+@app.route('/arsitektur/<int:id>')
+def arsitektur_detail(id):
+    arsitektur = Arsitektur.query.get_or_404(id)
+    return render_template('/rab/arsitektur/arsitektur_detail.html', arsitektur = arsitektur)
+
+@app.route('/arsitektur/edit/<int:id>', methods=['POST', 'GET'])
+def arsitektur_edit(id):
+    arsitektur = Arsitektur.query.get_or_404(id)
+    if request.method == 'POST':
+        arsitektur.nama_proyek=request.form['nama_proyek']
+        arsitektur.uraian=request.form['uraian']
+        arsitektur.subkategori=request.form['subkategori']
+        arsitektur.volume=request.form['volume']
+        arsitektur.satuan=request.form['satuan']
+        arsitektur.harga_satuan=request.form['harga_satuan']
+        arsitektur.jumlah=request.form['jumlah']
+
+        try:
+            db.session.commit()
+            flash('Data Arsitektur Berhasil Diubah', 'bg-success')
+            return redirect('/arsitektur')
+        except:
+            flash('Data Gagal Diubah, Silahkan Coba Lagi', 'bg-danger')
+            return redirect('/arsitektur')
+    
+    else:
+        proyek = Proyek.query.all()
+        sub = SubkategoriRAB.query.filter_by(kategori='Arsitektur').all()
+        return render_template('/rab/arsitektur/arsitektur_edit.html', arsitektur = arsitektur, subkategori = sub, proyeks = proyek)
+
+@app.route('/arsitektur/delete/<int:id>')
+def arsitektur_del(id):
+    hapus_arsitektur = Arsitektur.query.get_or_404(id)
+    try:
+        db.session.delete(hapus_arsitektur)
+        db.session.commit()
+        flash('Data Arsitektur Berhasil Dihapus', 'bg-success')
+        return redirect('/arsitektur')
+    except:
+        flash('Data Arsitektur Gagal Dihapus', 'bg-danger')
+        return redirect('/arsitektur')
 
 
 if __name__=="__main__":

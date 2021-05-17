@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block head %}<title>CV BKS | Detail Arsitektur</title>{% endblock %}
+{% block status_rab %} active {% endblock %}
+{% block status_arsitektur %} active {% endblock %}
+{% block body %}
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>Detail Arsitektur</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="/">Home</a></li>
+              <li class="breadcrumb-item"><a href="/arsitektur">Arsitektur</a></li>
+              <li class="breadcrumb-item active">Detail Arsitektur</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        
+        
+          <!-- left column -->
+          
+          <!--/.col (left) -->
+          <!-- right column -->
+          
+          
+            <!-- general form elements -->
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Deskripsi</h3>
+              </div>
+              <!-- /.card-header -->
+              <!-- form start -->
+              
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 form-group">
+                            <label for="exampleInputEmail1">Nama Proyek</label>
+                            <input type="text" class="form-control" value="{{ arsitektur.nama_proyek }}" disabled>
+                          </div>
+                          <div class="col-md-6 form-group">
+                            <label for="exampleInputEmail1">SubKategori</label>
+                            <input type="text" class="form-control" value="{{ arsitektur.subkategori }}" disabled>
+                          </div>
+                    </div>
+                    <div class="form-group">
+                    <label for="exampleInputEmail1">Uraian</label>
+                    <input type="text" class="form-control" value="{{ arsitektur.uraian }}" disabled>
+                    </div>
+                    <div class="row">
+                    <div class="col-sm-3 form-group">
+                        <label for="exampleInputEmail1">Volume</label>
+                        <input type="text" class="form-control" value="{{ arsitektur.volume }}" disabled>
+                    </div>
+                    <div class="col-sm-3 form-group">
+                        <label for="exampleInputEmail1">Satuan</label>
+                        <input type="text" class="form-control" value="{{ arsitektur.satuan }}" disabled>
+                    </div>
+                    <div class="col-sm-6 form-group">
+                        <label for="exampleInputEmail1">Harga Satuan</label>
+                        <input type="text" class="form-control" value="Rp {{ arsitektur.harga_satuan }}" disabled>
+                    </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Jumlah</label>
+                        <input type="text" class="form-control" value="Rp {{ arsitektur.jumlah }}" disabled>
+                    </div>
+                </div>
+                <!-- /.card-body -->
+
+                <div class="card-footer">
+                  <a href="/arsitektur" class="btn btn-warning float-right">Kembali</a>
+                </div>
+              
+            </div>
+            <!-- /.card -->
+        </form>
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+{% endblock %}
+{% block script %}{% endblock %}

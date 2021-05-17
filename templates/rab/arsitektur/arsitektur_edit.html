@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 
-{% block head %}<title>CV BKS | Edit Persiapan</title>{% endblock %}
+{% block head %}<title>CV BKS | Edit Arsitektur</title>{% endblock %}
 {% block status_rab %} active {% endblock %}
-{% block status_persiapan %} active {% endblock %}
+{% block status_arsitektur %} active {% endblock %}
 {% block body %}
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -11,13 +11,13 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Edit Persiapan</h1>
+            <h1>Edit Arsitektur</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="/">Home</a></li>
-              <li class="breadcrumb-item"><a href="/persiapan">Persiapan</a></li>
-              <li class="breadcrumb-item active">Edit Persiapan</li>
+              <li class="breadcrumb-item"><a href="/arsitektur">Arsitektur</a></li>
+              <li class="breadcrumb-item active">Edit Arsitektur</li>
             </ol>
           </div>
         </div>
@@ -31,7 +31,7 @@
           <!--/.col (left) -->
           <!-- right column -->
             <!-- general form elements -->
-            <form action="/persiapan/edit/{{ persiapan.id }}" method="POST">
+            <form action="/arsitektur/edit/{{ arsitektur.id }}" method="POST">
             <div class="card card-primary">
               <div class="card-header">
                 <h3 class="card-title">Deskripsi</h3>
@@ -45,7 +45,7 @@
                         <label for="exampleInputEmail1">Nama Proyek</label>
                         <select class="form-control" name="nama_proyek" style="width: 100%;">
                           {% for proyek in proyeks %}
-                          <option {% if persiapan.nama_proyek == proyek.nama_proyek %} value="{{ proyek.nama_proyek }}" selected {% endif %}>{{ proyek.nama_proyek }}</option>
+                          <option {% if arsitektur.nama_proyek == proyek.nama_proyek %} value="{{ proyek.nama_proyek }}" selected {% endif %}>{{ proyek.nama_proyek }}</option>
                           {% endfor %}
                         </select>
                       </div>
@@ -53,39 +53,39 @@
                         <label for="exampleInputEmail1">SubKategori</label>
                         <select class="form-control" name="subkategori" style="width: 100%;">
                           {% for sub in subkategori %}
-                          <option {% if persiapan.subkategori == sub.nama %} value="{{ sub.nama }}" selected {% endif %}>{{ sub.nama }}</option>
+                          <option {% if arsitektur.subkategori == sub.nama %} value="{{ sub.nama }}" selected {% endif %}>{{ sub.nama }}</option>
                           {% endfor %}
                         </select>
                       </div>
                 </div>
                 <div class="form-group">
                 <label for="exampleInputEmail1">Uraian</label>
-                <input type="text" class="form-control" name="uraian" value="{{ persiapan.uraian }}">
+                <input type="text" class="form-control" name="uraian" value="{{ arsitektur.uraian }}">
                 </div>
                 <div class="row">
                 <div class="col-sm-3 form-group">
                     <label for="exampleInputEmail1">Volume</label>
-                    <input type="text" class="form-control" name="volume" value="{{ persiapan.volume }}">
+                    <input type="text" class="form-control" name="volume" value="{{ arsitektur.volume }}">
                 </div>
                 <div class="col-sm-3 form-group">
                     <label for="exampleInputEmail1">Satuan</label>
-                    <input type="text" class="form-control" name="satuan" value="{{ persiapan.satuan }}">
+                    <input type="text" class="form-control" name="satuan" value="{{ arsitektur.satuan }}">
                 </div>
                 <div class="col-sm-6 form-group">
                     <label for="exampleInputEmail1">Harga Satuan</label>
-                    <input type="text" class="form-control" name="harga_satuan" value="{{ persiapan.harga_satuan }}">
+                    <input type="text" class="form-control" name="harga_satuan" value="{{ arsitektur.harga_satuan }}">
                 </div>
                 </div>
                 <div class="form-group">
                     <label for="exampleInputEmail1">Jumlah</label>
-                    <input type="text" class="form-control" name="jumlah" value="{{ persiapan.jumlah }}">
+                    <input type="text" class="form-control" name="jumlah" value="{{ arsitektur.jumlah }}">
                 </div>
             </div>
             <!-- /.card-body -->
 
                 <div class="card-footer">
                   <button type="submit" class="btn btn-primary">Submit</button>
-                  <a href="/persiapan" class="btn btn-warning float-right">Kembali</a>
+                  <a href="/arsitektur" class="btn btn-warning float-right">Kembali</a>
                 </div>
               
             </div>
