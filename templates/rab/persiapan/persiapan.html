@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 
-{% block head %} <title>CV BKS | Proyek</title> {% endblock %}
-{% block status_proyek %} active {% endblock %}
+{% block head %}<title>CV BKS | Pemasukan</title>{% endblock %}
+{% block status_rab %} active {% endblock %}
+{% block status_persiapan %} active {% endblock %}
 {% block body %}
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -10,12 +11,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Proyek</h1>
+            <h1>Persiapan</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Proyek</li>
+              <li class="breadcrumb-item"><a href="/">Home</a></li>
+              <li class="breadcrumb-item active">Persiapan</li>
             </ol>
           </div>
         </div>
@@ -41,7 +42,6 @@
           </div>
         </div>
         <div class="card-body p-0">
-          <div class="table-responsive">
           <table class="table table-striped projects">
               <thead>
                   <tr>
@@ -49,132 +49,129 @@
                           #
                       </th>
                       <th>
-                          Nama Proyek
+                          Deskripsi
                       </th>
-                      <th class="text-center" style="width: 12%">
-                          Tanggal
+                      <th style="width: 15%">
+                          Volume
                       </th>
-                      <th class="text-center" style="width: 25%;">
-                          Progress
+                      <th style="width: 15%">
+                          Jumlah
                       </th>
                       <th style="width: 25%">
                       </th>
                   </tr>
               </thead>
               <tbody>
-                  {% for proyek in proyeks %}
+                {% for persiapan in persiapans %}
                   <tr>
                       <td>
-                          {{ proyek.id }}
+                          {{ persiapan.id }}
                       </td>
                       <td>
                           <a>
-                              {{ proyek.nama_proyek }}
+                              {{ persiapan.uraian }}
                           </a>
                           <br/>
                           <small>
-                              {{ proyek.lokasi }}
+                              {{ persiapan.nama_proyek }}
                           </small>
                       </td>
-                      <td class="text-center">
-                        <small>{{ proyek.tgl_mulai }}</small>
-                        <br><i class="fas fa-angle-double-down"></i><br>
-                        <small>{{ proyek.tgl_selesai }}</small>
+                      <td>
+                          {{ persiapan.volume  }} {{ persiapan.satuan}}
                       </td>
-                      <td class="project_progress">
-                        <div class="progress progress-sm">
-                              <div class="progress-bar bg-green" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
-                              </div>
-                          </div>
-                          <small>
-                              100% Complete
-                          </small>
+                      <td>
+                          Rp {{ persiapan.jumlah }}
                       </td>
                       <td class="project-actions text-right">
-                          <a class="btn btn-primary btn-sm" href="/proyek/{{ proyek.id }}">
+                          <a class="btn btn-primary btn-sm" href="/persiapan/{{ persiapan.id }}">
                               <i class="fas fa-folder">
                               </i>
                               Lihat
                           </a>
-                          <a class="btn btn-info btn-sm" href="/proyek/edit/{{ proyek.id }}">
+                          <a class="btn btn-info btn-sm" href="/persiapan/edit/{{ persiapan.id }}">
                               <i class="fas fa-pencil-alt">
                               </i>
                               Edit
                           </a>
-                          <a class="btn btn-danger btn-sm" href="/proyek/delete/{{ proyek.id }}">
+                          <a class="btn btn-danger btn-sm" href="/persiapan/delete/{{ persiapan.id }}">
                               <i class="fas fa-trash">
                               </i>
                               Hapus
                           </a>
                       </td>
                   </tr>
-                  {% endfor %}
-                  
+                {% endfor %}
               </tbody>
           </table>
-          </div>
         </div>
         <!-- /.card-body -->
       </div>
       <!-- /.card -->
-      
+
       <div class="modal fade" id="modal-default">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title">Tambah Proyek</h5>
+              <h4 class="modal-title">Tambah Persiapan</h4>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <!-- form start -->
-            <form action="/proyek" method="POST">
-              <div class="modal-body">
-                <div class="form-group">
-                  <label for="exampleInputEmail1">Nama Proyek</label>
-                  <input type="text" class="form-control" name="nama_proyek" placeholder="Masukkan nama proyek">
-                </div>
-                <div class="form-group">
-                  <label for="exampleInputEmail1">Lokasi Proyek</label>
-                  <input type="text" class="form-control" name="lokasi" placeholder="Masukkan alamat">
-                </div>
-                <div class="form-group">
-                  <label for="exampleInputEmail1">Nama Klien</label>
-                  <input type="text" class="form-control" name="nama_klien" placeholder="Masukkan alamat">
-                </div>
-                <div class="form-group">
-                  <label for="exampleInputEmail1">No. HP Klien</label>
-                  <input type="text" class="form-control" name="no_hp" placeholder="Masukkan alamat">
-                </div>
-                  <div class="row">
-                    <div class="col">
-                      <div class="form-group">
-                        <label for="exampleInputEmail1">Tanggal Mulai</label>
-                        <input type="date" class="form-control" name="tgl_mulai">
-                      </div>
+            <form action="/persiapan" method="POST">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Proyek</label>
+                        <select class="form-control" name="nama_proyek" style="width: 100%;">
+                        {% for proyek in proyeks %}
+                        <option>{{ proyek.nama_proyek }}</option>
+                        {% endfor %}
+                        </select>
+                    </div>  
+                    <div class="form-group">
+                        <label>SubKategori</label>
+                        <select class="form-control" name="subkategori" style="width: 100%;">
+                            {% for sub in subkategori %}
+                            <option>{{ sub.nama }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
-                    <div class="col">
-                      <div class="form-group">
-                        <label for="exampleInputEmail1">Perkiraan Tanggal Selesai</label>
-                        <input type="date" class="form-control" name="tgl_selesai">
-                      </div>
+                    <div class="form-group">
+                    <label for="exampleInputEmail1">Uraian</label>
+                    <input type="text" class="form-control" name="uraian" placeholder="Masukkan uraian">
                     </div>
-                  </div>
-              </div>
-              <div class="modal-footer justify-content-between">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary">Save changes</button>
-              </div>
-            </form>
-            
-            <!-- /.card -->
+                    <div class="row">
+                        <div class="col-md-3 form-group">
+                            <label for="exampleInputEmail1">Volume</label>
+                            <input type="text" class="form-control" name="volume" placeholder="Masukkan volume">
+                        </div>
+                        <div class="col-md-3 form-group">
+                            <label for="exampleInputEmail1">Satuan</label>
+                            <input type="text" class="form-control" name="satuan" placeholder="Masukkan satuan">
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label for="exampleInputEmail1">Harga Satuan</label>
+                            <input type="text" class="form-control" name="harga_satuan" placeholder="Masukkan harga satuan">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="exampleInputEmail1">Jumlah</label>
+                      <input type="text" class="form-control" name="jumlah" placeholder="Masukkan jumlah">
+                    </div>
 
+                </div>
+                <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
+                <input type="submit" class="btn btn-primary" value="Simpan">
+                </div>
+            </form>
           </div>
           <!-- /.modal-content -->
         </div>
+        
         <!-- /.modal-dialog -->
       </div>
       <!-- /.modal -->
+
     </section>
     <!-- /.content -->
   </div>

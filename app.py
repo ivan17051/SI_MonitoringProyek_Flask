@@ -4,7 +4,7 @@ from datetime import datetime, date
 from babel.numbers import format_number
 import os
 
-from coba import coba
+from coba import coba, ocr_core
 
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
@@ -56,16 +56,64 @@ class Pengeluaran(db.Model):
     bukti = db.Column(db.String(200), nullable=True)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
 
+class Persiapan(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nama_proyek = db.Column(db.String(100), nullable=False)
+    uraian = db.Column(db.String(200), nullable=False)
+    subkategori = db.Column(db.String(50), nullable=False)
+    volume = db.Column(db.Integer, nullable=False)
+    satuan = db.Column(db.String(20), nullable=False)
+    harga_satuan = db.Column(db.Integer, nullable=False)
+    jumlah = db.Column(db.Integer, nullable=False)
+    date_created = db.Column(db.DateTime, default=datetime.utcnow)
+
+class Arsitektur(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nama_proyek = db.Column(db.String(100), nullable=False)
+    uraian = db.Column(db.String(200), nullable=False)
+    subkategori = db.Column(db.String(50), nullable=False)
+    volume = db.Column(db.Integer, nullable=False)
+    satuan = db.Column(db.String(20), nullable=False)
+    harga_satuan = db.Column(db.Integer, nullable=False)
+    jumlah = db.Column(db.Integer, nullable=False)
+    date_created = db.Column(db.DateTime, default=datetime.utcnow)
+
+class Struktur(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nama_proyek = db.Column(db.String(100), nullable=False)
+    uraian = db.Column(db.String(200), nullable=False)
+    subkategori = db.Column(db.String(50), nullable=False)
+    volume = db.Column(db.Integer, nullable=False)
+    satuan = db.Column(db.String(20), nullable=False)
+    harga_satuan = db.Column(db.Integer, nullable=False)
+    jumlah = db.Column(db.Integer, nullable=False)
+    date_created = db.Column(db.DateTime, default=datetime.utcnow)
+
+class MEP(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nama_proyek = db.Column(db.String(100), nullable=False)
+    uraian = db.Column(db.String(200), nullable=False)
+    subkategori = db.Column(db.String(50), nullable=False)
+    volume = db.Column(db.Integer, nullable=False)
+    satuan = db.Column(db.String(20), nullable=False)
+    harga_satuan = db.Column(db.Integer, nullable=False)
+    jumlah = db.Column(db.Integer, nullable=False)
+    date_created = db.Column(db.DateTime, default=datetime.utcnow)
+
 @app.route('/', methods=['POST', 'GET'])
 def index():
     tasks = Proyek.query.count()
+    ocr = 'static/media/ocr_1.png'
     if request.method == 'POST':
-        nilai = coba(tasks)
-        tgl = nilai[1]
-        desk = nilai[2]
-        return render_template('index.html', proyek = tasks, tgl = tgl, desk = desk)
+        nilai = ocr_core(ocr)
+        return render_template('index.html', proyek = tasks, nilai = nilai)
     else:
         return render_template('index.html', proyek = tasks)
+
+@app.route('/coba')
+def andro():
+    tasks = Proyek.query.all()
+    return render_template('andro.html', proyeks = tasks)
 
 #|=============================================|
 #|====================PROYEK===================|
@@ -85,8 +133,10 @@ def proyek():
         try:
             db.session.add(new_task)
             db.session.commit()
+            flash('Data Proyek Berhasil Ditambahkan', 'bg-success')
             return redirect('/proyek')
         except:
+            flash('Data Proyek Tidak Berhasil Ditambahkan', 'bg-danger')
             return 'Error input data'
     else:
         tasks = Proyek.query.order_by(Proyek.date_created).all()
@@ -105,12 +155,16 @@ def proyek_edit(id):
         task.lokasi=request.form['lokasi']
         task.nama_klien=request.form['nama_klien']
         task.no_hp=request.form['no_hp']
+        task.tgl_mulai=request.form['tgl_mulai']
+        task.tgl_selesai=request.form['tgl_selesai']
     
         try:
             db.session.commit()
+            flash('Data Proyek Berhasil Diubah', 'bg-success')
             return redirect('/proyek')
         except:
-            return 'Error input data'
+            flash('Data Proyek Tidak Berhasil Diubah', 'bg-danger')
+            return redirect('/proyek')
     else:
         return render_template('proyek/proyek_edit.html', proyek = task)
 
@@ -407,5 +461,76 @@ def pengeluaran_del(id):
         return redirect('/pengeluaran')
 
 
+@app.route('/persiapan', methods=['POST', 'GET'])
+def persiapan():
+    if request.method == 'POST':
+
+        new_task = Persiapan(
+            nama_proyek=request.form['nama_proyek'],
+            uraian=request.form['uraian'],
+            subkategori=request.form['subkategori'],
+            volume=request.form['volume'],
+            satuan=request.form['satuan'],
+            harga_satuan=request.form['harga_satuan'],
+            jumlah=request.form['jumlah']
+            )
+
+        try:
+            db.session.add(new_task)
+            db.session.commit()
+            flash('Data Persiapan Berhasil Ditambahkan', 'bg-success')
+            return redirect('/persiapan')
+        except:
+            flash('Data Persiapan Tidak Berhasil Ditambahkan', 'bg-danger')
+            return redirect('/persiapan')
+    else:
+        sub = SubkategoriRAB.query.filter_by(kategori='Persiapan').all()
+        proyek = Proyek.query.all()
+        tasks = Persiapan.query.order_by(Persiapan.date_created).all()
+        return render_template('/rab/persiapan/persiapan.html', persiapans = tasks, subkategori = sub, proyeks = proyek)
+
+@app.route('/persiapan/<int:id>')
+def persiapan_detail(id):
+    persiapan = Persiapan.query.get_or_404(id)
+    return render_template('/rab/persiapan/persiapan_detail.html', persiapan = persiapan)
+
+@app.route('/persiapan/edit/<int:id>', methods=['POST', 'GET'])
+def persiapan_edit(id):
+    persiapan = Persiapan.query.get_or_404(id)
+    if request.method == 'POST':
+        persiapan.nama_proyek=request.form['nama_proyek']
+        persiapan.uraian=request.form['uraian']
+        persiapan.subkategori=request.form['subkategori']
+        persiapan.volume=request.form['volume']
+        persiapan.satuan=request.form['satuan']
+        persiapan.harga_satuan=request.form['harga_satuan']
+        persiapan.jumlah=request.form['jumlah']
+
+        try:
+            db.session.commit()
+            flash('Data Persiapan Berhasil Diubah', 'bg-success')
+            return redirect('/persiapan')
+        except:
+            flash('Data Gagal Diubah, Silahkan Coba Lagi', 'bg-danger')
+            return redirect('/persiapan')
+    
+    else:
+        proyek = Proyek.query.all()
+        sub = SubkategoriRAB.query.filter_by(kategori='Persiapan').all()
+        return render_template('/rab/persiapan/persiapan_edit.html', persiapan = persiapan, subkategori = sub, proyeks = proyek)
+
+@app.route('/persiapan/delete/<int:id>')
+def persiapan_del(id):
+    hapus_persiapan = Persiapan.query.get_or_404(id)
+    try:
+        db.session.delete(hapus_persiapan)
+        db.session.commit()
+        flash('Data Persiapan Berhasil Dihapus', 'bg-success')
+        return redirect('/persiapan')
+    except:
+        flash('Data Persiapan Gagal Dihapus', 'bg-danger')
+        return redirect('/persiapan')
+
+
 if __name__=="__main__":
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')
